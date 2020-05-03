@@ -4,7 +4,7 @@ module.exports = {
   webpack(config, options) {
     config.resolve.alias = {
       ...config.resolve.alias,
-      "~": path.resolve("packages")
+      "~client": path.resolve(__dirname, "./src")
     }
     return config
   }

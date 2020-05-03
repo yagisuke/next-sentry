@@ -1,6 +1,6 @@
 import React from 'react'
-import Head from '~/components/layouts/head'
-import View from '~/components/views/b/view'
+import Head from '~client/components/layouts/head'
+import View from '~client/components/views/b/view'
 
 type Props = {
   title: string
@@ -8,9 +8,8 @@ type Props = {
 
 class Page extends React.Component<Props> {
   static async getInitialProps(): Promise<Props> {
-    console.log('b', new Date())
     return {
-      title: 'b'
+      title: 'b',
     }
   }
   render() {
