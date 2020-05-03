@@ -1,6 +1,8 @@
 {
-  "name": "custom-server-typescript",
+  "name": "next-sentry",
   "version": "1.0.0",
+  "license": "UNLICENSED",
+  "private": true,
   "scripts": {
     "dev": "nodemon",
     "build": "next build && tsc --project tsconfig.server.json",

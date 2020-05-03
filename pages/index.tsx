@@ -1,17 +1,25 @@
 import React from 'react'
-import Link from 'next/link'
+import Head from '~/components/layouts/head'
+import View from '~/components/views/index/view'
 
-export default () => (
-  <ul>
-    <li>
-      <Link href="/a" as="/a">
-        <a>a</a>
-      </Link>
-    </li>
-    <li>
-      <Link href="/b" as="/b">
-        <a>b</a>
-      </Link>
-    </li>
-  </ul>
-)
+type Props = {
+  title: string
+}
+
+class Page extends React.Component<Props> {
+  static async getInitialProps(): Promise<Props> {
+    return {
+      title: 'title'
+    }
+  }
+  render() {
+    return (
+      <>
+        <Head title={this.props.title} />
+        <View />
+      </>
+    )
+  }
+}
+
+export default Page
