@@ -8,9 +8,11 @@
     "build": "next build && tsc --project tsconfig.server.json",
     "start": "cross-env NODE_ENV=production node dist/index.js",
     "prettier": "prettier \"server/**/*.ts\" \"src/**/*.tsx\" --write",
+    "prettier:ci": "prettier \"server/**/*.ts\" \"src/**/*.tsx\" --check",
     "lint": "eslint \"server/**/*.ts\" \"src/**/*.tsx\""
   },
   "dependencies": {
+    "@material-ui/core": "^4.9.12",
     "cross-env": "^7.0.2",
     "next": "^9.3.6",
     "react": "^16.13.1",
