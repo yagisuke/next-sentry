@@ -33,6 +33,8 @@ jobs:
             yarn install
       - save_yarn_cache
   format_job:
+    executor:
+      name: node_executor
     steps:
       - checkout
       - restore_yarn_cache
