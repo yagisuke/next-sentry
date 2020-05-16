@@ -12,7 +12,7 @@ class Error extends React.Component<InitialProps> {
     const statusCode =
       (res && res.statusCode) || (err && err.statusCode) || null
 
-    if (![400, 404].includes(statusCode)) {
+    if (![404].includes(statusCode)) {
       captureException(err, ctx)
     }
 
@@ -23,8 +23,8 @@ class Error extends React.Component<InitialProps> {
   render() {
     return (
       <>
-        <Head title={'THIS IS AN ERROR.'} />
-        <h1>{this.props.statusCode}: THIS IS AN ERROR.</h1>
+        <Head title="THIS IS ERROR." />
+        <h1>{this.props.statusCode}: THIS IS ERROR.</h1>
       </>
     )
   }

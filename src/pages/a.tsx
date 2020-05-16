@@ -8,7 +8,7 @@ type Props = {
 
 class Page extends React.Component<Props> {
   static async getInitialProps({ query }): Promise<Props> {
-    if (query.addError2) {
+    if (query.logger2) {
       throw new Error(`yagisuke's error2.`)
     }
     return {
