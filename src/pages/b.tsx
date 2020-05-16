@@ -1,4 +1,5 @@
 import React from 'react'
+import { captureException } from '~utils/sentry'
 import Head from '~client/components/layouts/head'
 import View from '~client/components/views/b/view'
 
@@ -7,7 +8,14 @@ type Props = {
 }
 
 class Page extends React.Component<Props> {
-  static async getInitialProps(): Promise<Props> {
+  static async getInitialProps(ctx): Promise<Props> {
+    if (ctx.query.addError2) {
+      try {
+        throw new Error(`yagisuke's error2.`)
+      } catch (err) {
+        captureException(err, ctx)
+      }
+    }
     return {
       title: 'b',
     }
