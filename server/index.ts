@@ -1,46 +1,44 @@
 import Express from 'express'
 import Next from 'next'
+import bodyParser from 'body-parser'
 import sentryInit from '../utils/sentry'
 import conf from '../next.config'
 
 const port = parseInt(process.env.PORT || '3000', 10)
 const dev = process.env.NODE_ENV !== 'production'
 const app = Next({ dev, conf })
-const server = Express()
 const handle = app.getRequestHandler()
 
 app.prepare().then(() => {
-  const Sentry = sentryInit(app.buildId)
-  server.use(Sentry.Handlers.requestHandler())
+  const server = Express()
+  server.use(bodyParser.urlencoded({ extended: true }))
+  server.use(bodyParser.json())
 
-  server.get('/a', (req, res, next) => {
-    if (req.query?.addError) {
-      throw new Error(`/a: yagisuke's error.`)
-    }
-    next()
+  const sentry = sentryInit(app.buildId)
+  server.use(sentry.Handlers.requestHandler())
+
+  server.get('/c', () => {
+    throw new Error(`/c: yagisuke's error.`)
   })
 
-  server.get('/b', (req, res, next) => {
-    if (req.query?.addError) {
-      try {
-        throw new Error('this is an error.')
-      } catch (err) {
-        Sentry.configureScope((scope) => {
-          scope.setFingerprint([`sampleFingerprint`])
-          scope.setExtra('sampleExtra', 'sampleExtra')
-          scope.setTag('sampleTag', 'sampleTag')
-        })
-        Sentry.setUser({
-          id: '1',
-          username: 'sample user',
-        })
-        Sentry.captureException(err)
-      }
+  server.get('/d', () => {
+    try {
+      throw new Error(`/b: yagisuke's error.`)
+    } catch (err) {
+      sentry.configureScope((scope) => {
+        scope.setFingerprint([`sampleFingerprint`])
+        scope.setExtra('sampleExtra', 'sampleExtra')
+        scope.setTag('sampleTag', 'sampleTag')
+      })
+      sentry.setUser({
+        id: '1',
+        username: 'sample user',
+      })
+      sentry.captureException(err)
     }
-    next()
   })
 
-  server.use(Sentry.Handlers.errorHandler())
+  server.use(sentry.Handlers.errorHandler())
 
   server.all('*', (req, res) => {
     return handle(req, res)

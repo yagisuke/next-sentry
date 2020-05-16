@@ -5,8 +5,8 @@
   "private": true,
   "scripts": {
     "dev": "nodemon",
-    "build": "next build && tsc --project tsconfig.server.json",
-    "start": "cross-env NODE_ENV=production node dist/index.js",
+    "start": "cross-env NODE_ENV=production node dist/server/index.js",
+    "build": "next build",
     "prettier": "prettier \"server/**/*.ts\" \"src/**/*.tsx\" --write",
     "prettier:ci": "prettier \"server/**/*.ts\" \"src/**/*.tsx\" --check",
     "lint": "eslint \"server/**/*.ts\" \"src/**/*.tsx\""
@@ -15,6 +15,7 @@
     "@material-ui/core": "^4.9.12",
     "@sentry/browser": "^5.15.5",
     "@sentry/node": "^5.15.5",
+    "body-parser": "^1.19.0",
     "cross-env": "^7.0.2",
     "express": "^4.17.1",
     "next": "^9.4.0",

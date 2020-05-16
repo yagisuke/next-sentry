@@ -9,7 +9,7 @@ type Props = {
 
 class Page extends React.Component<Props> {
   static async getInitialProps(ctx): Promise<Props> {
-    if (ctx.query.addError2) {
+    if (ctx.query.logger2) {
       try {
         throw new Error(`yagisuke's error2.`)
       } catch (err) {
