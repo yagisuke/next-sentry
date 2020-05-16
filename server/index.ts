@@ -1,31 +1,53 @@
-import { createServer } from 'http'
-import { parse } from 'url'
-import next from 'next'
+import Express from 'express'
+import Next from 'next'
+import sentryInit from '../utils/sentry'
 import conf from '../next.config'
 
 const port = parseInt(process.env.PORT || '3000', 10)
 const dev = process.env.NODE_ENV !== 'production'
-const app = next({ dev, conf })
+const app = Next({ dev, conf })
+const server = Express()
 const handle = app.getRequestHandler()
 
 app.prepare().then(() => {
-  createServer((req, res) => {
-    const parsedUrl = parse(req.url!, true)
-    const { pathname, query } = parsedUrl
+  const Sentry = sentryInit(app.buildId)
+  server.use(Sentry.Handlers.requestHandler())
 
-    if (pathname === '/a') {
-      app.render(req, res, '/a', query)
-    } else if (pathname === '/b') {
-      app.render(req, res, '/b', query)
-    } else {
-      handle(req, res, parsedUrl)
+  server.get('/a', (req, res, next) => {
+    if (req.query?.addError) {
+      throw new Error(`/a: yagisuke's error.`)
     }
-  }).listen(port)
+    next()
+  })
 
-  // tslint:disable-next-line:no-console
-  console.log(
-    `> Server listening at http://localhost:${port} as ${
-      dev ? 'development' : process.env.NODE_ENV
-    }`
-  )
+  server.get('/b', (req, res, next) => {
+    if (req.query?.addError) {
+      try {
+        throw new Error('this is an error.')
+      } catch (err) {
+        Sentry.configureScope((scope) => {
+          scope.setFingerprint([`sampleFingerprint`])
+          scope.setExtra('sampleExtra', 'sampleExtra')
+          scope.setTag('sampleTag', 'sampleTag')
+        })
+        Sentry.setUser({
+          id: '1',
+          username: 'sample user',
+        })
+        Sentry.captureException(err)
+      }
+    }
+    next()
+  })
+
+  server.use(Sentry.Handlers.errorHandler())
+
+  server.all('*', (req, res) => {
+    return handle(req, res)
+  })
+
+  server.listen(port, (err) => {
+    if (err) throw err
+    console.log(`> Ready on http://localhost:${port}`)
+  })
 })
